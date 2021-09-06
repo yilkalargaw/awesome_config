@@ -1,0 +1,35 @@
+# Compiled
+*.elc
+
+# Packaging
+.cask
+
+# Backup files
+*~
+
+# Undo-tree save-files
+*.~undo-tree
+
+# -*- mode: gitignore; -*-
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+.\#*
+
+
+# Flycheck
+flycheck_*.el
+
+# projectiles files
+.projectile
+projectile*
+
+
+# directory configuration
+.dir-locals.el
+
+awesome-copycats/
+./awesome.brightness-widget
