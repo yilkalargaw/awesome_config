@@ -679,6 +679,9 @@ awful.rules.rules = {
     --  { rule = { class = "Firefox" },
     --    properties = { screen = 1, tag = awful.util.tagnames[1] } },
 
+      { rule = { name = "pcmanfm-qt", "pcmanfm" },
+        properties = { sticky = true, border_width = 0, focus=false} },
+
 }
 
 -- Signal function to execute when a new client appears.
