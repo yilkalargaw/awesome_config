@@ -679,7 +679,10 @@ awful.rules.rules = {
     --  { rule = { class = "Firefox" },
     --    properties = { screen = 1, tag = awful.util.tagnames[1] } },
 
-      { rule = { name = "pcmanfm-qt", "pcmanfm" },
+      { rule = { name = "pcmanfm-qt" },
+        properties = { sticky = true, border_width = 0, focus=false} },
+
+      { rule = { name = "pcmanfm" },
         properties = { sticky = true, border_width = 0, focus=false} },
 
 }
@@ -810,7 +813,7 @@ function scandir(directory, filter)
 end
 
 -- }}}
----[[
+--[[
 -- configuration - edit to your liking
 wp_index = 1
 wp_timeout  = 300
