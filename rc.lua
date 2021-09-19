@@ -685,6 +685,10 @@ awful.rules.rules = {
       { rule = { name = "pcmanfm" },
         properties = { sticky = true, border_width = 0, focus=false} },
 
+      { rule = { name = "conky" },
+        properties = { sticky = true, border_width = 0, focus=false} },
+
+
 }
 
 -- Signal function to execute when a new client appears.
