@@ -578,87 +578,44 @@ awful.rules.rules = {
     { rule_any = { type = { "dialog" } },
       properties = { titlebars_enabled = false } },
 
-
-    -- Set Firefox to always map on the tag named "web" on screen 1.
-    { rule = { class = "Firefox" },
-      properties = {tag = "web" } },
-
-    { rule = { class = "firefox" },
-      properties = {tag = "web" } },
-
-    { rule = { name = "Mozilla Firefox" },
-      properties = {tag = "web" } },
+    { rule_any = { type = { "desktop" } },
+      properties = { sticky = true, border_width = 0} },
 
     -- Set Emacs to always map on the tag named "emacs" on screen 1.
     { rule = { class = "Emacs" },
       properties = {tag = "emacs", maximized = true } },
 
-    -- Set Firefox to always map on the tag named "web" on screen 1.
-    { rule = { class = "Chromium" },
-      properties = {tag = "web" } },
+    -- Set browsers to alway map on the tag named "web"
+    { rule_any = { class = { "Firefox",
+			     "firefox",
+			     "Mozilla Firefox",
+			     "Chromium",
+			     "Opera",
+			     "Midori",
+			     "Vivaldi",
+			     "Basilisk",
+			     "Brave",
+			     "IceCat",
+			     "LibreWolf",
+			     "microsoft-edge-dev",
+			     "Microsoft-edge-dev",
+			     "microsoft-edge",
+			     "Microsoft-edge",
+			     "google-chrome",
+			     "Google-chrome",
+			     "Falkon",
+			     "Falkon Browser", },
+		   name = {"Pale Moon", }},
+      properties = {tag = "web" }},
 
-    { rule = { class = "Opera" },
-      properties = {tag = "web" } },
-
-    { rule = { class = "Midori" },
-      properties = {tag = "web" } },
-
-    { rule = { class = "Vivaldi" },
-      properties = {tag = "web" } },
-    
-    { rule = { class = "Basilisk" },
-      properties = {tag = "web" } },
-
-    { rule = { name = "Pale Moon" },
-      properties = {tag = "web" } },
-
-    { rule = { class = "Brave" },
-      properties = {tag = "web" } },
-
-    { rule = { class = "IceCat" },
-      properties = {tag = "web" } },
-
-    { rule = { class = "LibreWolf" },
-      properties = {tag = "web" } },
-
-    { rule = { class = "microsoft-edge-dev" },
-      properties = {tag = "web" } },
-
-    { rule = { class = "Microsoft-edge-dev" },
-      properties = {tag = "web" } },
-
-    { rule = { class = "microsoft-edge" },
-      properties = {tag = "web" } },
-
-    { rule = { class = "Microsoft-edge" },
-      properties = {tag = "web" } },
-
-    { rule = { class = "google-chrome" },
-      properties = {tag = "web" } },
-
-    { rule = { class = "Google-chrome" },
-      properties = {tag = "web" } },
-
-    { rule = { class = "Falkon" },
-      properties = {tag = "web" } },
-      
-    { rule = { class = "Falkon Browser"},
-      properties = {tag = "web" } },
+    { rule_any = { name = { "GNU Image Manipulation Program",
+			    "MyPaint",
+			    "Inkscape",
+			    "krita" }},
+      properties = { maximized = true } },
 
     { rule = { name = "Whisker Menu" },
       properties = {floating = true } },
-
-    { rule = { name = "GNU Image Manipulation Program" },
-      properties = {maximized = true } },
-
-    { rule = { name = "MyPaint" },
-      properties = {maximized = true } },
-
-    { rule = { instance = "Inkscape" },
-      properties = {maximized = true } },
-
-    { rule = { class = "krita" },
-      properties = {maximized = true } },
 
     { rule = { role = "xfce4-terminal-dropdown" },
       properties = {floating = true } },
@@ -679,11 +636,15 @@ awful.rules.rules = {
     --  { rule = { class = "Firefox" },
     --    properties = { screen = 1, tag = awful.util.tagnames[1] } },
 
-      { rule = { name = "pcmanfm-qt" },
-        properties = { sticky = true, border_width = 0, focus=false} },
+      -- { rule = { name = "pcmanfm-qt" },
+      --   properties = { sticky = true, border_width = 0, focus=false} },
 
-      { rule = { name = "pcmanfm" },
-        properties = { sticky = true, border_width = 0, focus=false} },
+     -- { rule = { class = "pcmanfm-qt" },
+     --   properties = { floating = true, sticky = true, ontop = true, above = true, border_width = 0},
+     --   callback = awful.placement.centered },
+
+      -- { rule = { name = "pcmanfm" },
+      --   properties = { sticky = true, border_width = 0, focus=false} },
 
       { rule = { name = "conky" },
         properties = { sticky = true, border_width = 0, focus=false} },
