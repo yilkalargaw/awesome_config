@@ -778,7 +778,8 @@ function scandir(directory, filter)
 end
 
 -- }}}
---[[
+---[[
+-- this part deals with setting images from the wallpaper directories as a wallpaper in slideshow mode  
 -- configuration - edit to your liking
 wp_index = 1
 wp_timeout  = 300
