@@ -434,10 +434,10 @@ globalkeys = gears.table.join(
 --       awful.util.spawn("xbacklight -inc 5") end)
 
 --    -- Brightness
-    awful.key({ modkey, "Control" }, "]", function () os.execute("lxqt-backlight_backend --inc 5") end,
-              {description = "10", group = "hotkeys"}),
-    awful.key({ modkey, "Control" }, "[", function () os.execute("lxqt-backlight_backend --dec 5") end,
-              {description = "10", group = "hotkeys"})
+    awful.key({ modkey, "Control" }, "KP_Add", function () os.execute("lxqt-config-brightness -i 20") end),
+    awful.key({ modkey, "Control" }, "KP_Subtract", function () os.execute("lxqt-config-brightness -d 20") end),
+    awful.key({ modkey, "Control" }, "]", function () os.execute("lxqt-config-brightness -i 20") end),
+    awful.key({ modkey, "Control" }, "[", function () os.execute("lxqt-config-brightness -d 20") end)
 
 ------------------------------------------------------------------------
 )
