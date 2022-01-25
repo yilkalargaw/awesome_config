@@ -734,7 +734,7 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- startup_programs.run("lxsettings-daemon")
    startup_programs.run("xsettingsd")
 -- startup_programs.run("start-pulseaudio-x11")
--- startup_programs.run("nm-applet")
+   startup_programs.run("nm-applet")
    startup_programs.run("picom")
 -- startup_programs.run("xfce4-power-manager")
 -- startup_programs.run("xfce4-power-manager --restart")
