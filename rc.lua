@@ -597,6 +597,7 @@ awful.rules.rules = {
 			     "Brave",
 			     "IceCat",
 			     "LibreWolf",
+                             "librewolf",
 			     "microsoft-edge-dev",
 			     "Microsoft-edge-dev",
 			     "microsoft-edge",
