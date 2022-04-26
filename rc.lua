@@ -762,7 +762,9 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- startup_programs.run("ulauncher")
 --
 --startup_programs.run("~/.config/awesome/wallpaper.sh")
+  startup_programs.run("pcmanfm-qt --desktop")
 
+--[[
 -- scan directory, and optionally filter outputs
 function scandir(directory, filter)
    local i, t, popen = 0, {}, io.popen
@@ -780,7 +782,6 @@ function scandir(directory, filter)
 end
 
 -- }}}
----[[
 -- this part deals with setting images from the wallpaper directories as a wallpaper in slideshow mode  
 -- configuration - edit to your liking
 wp_index = 1
