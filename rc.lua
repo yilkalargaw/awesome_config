@@ -23,7 +23,6 @@ local my_table      = awful.util.table or gears.table -- 4.{0,1} compatibility
 local dpi           = require("beautiful.xresources").apply_dpi
 
 
-local startup_programs = require("runonce")
 
 if awesome.startup_errors then
     naughty.notify({ preset = naughty.config.presets.critical,
@@ -323,8 +322,8 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Control" }, "r", awesome.restart,
               {description = "reload awesome", group = "awesome"}),
 
-    awful.key({ modkey, "Shift"   }, "q", awesome.quit,
-              {description = "quit awesome", group = "awesome"}),
+--   awful.key({ modkey, "Shift"   }, "q", awesome.quit,
+--             {description = "quit awesome", group = "awesome"}),
 
     awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)          end,
               {description = "increase master width factor", group = "layout"}),
@@ -437,7 +436,9 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Control" }, "KP_Add", function () os.execute("lxqt-config-brightness -i 20") end),
     awful.key({ modkey, "Control" }, "KP_Subtract", function () os.execute("lxqt-config-brightness -d 20") end),
     awful.key({ modkey, "Control" }, "]", function () os.execute("lxqt-config-brightness -i 20") end),
-    awful.key({ modkey, "Control" }, "[", function () os.execute("lxqt-config-brightness -d 20") end)
+    awful.key({ modkey, "Control" }, "[", function () os.execute("lxqt-config-brightness -d 20") end),
+    awful.key({ }, "XF86MonBrightnessUp", function () os.execute("lxqt-config-brightness -i 20") end),
+    awful.key({ }, "XF86MonBrightnessDown", function () os.execute("lxqt-config-brightness -d 20") end)
 
 ------------------------------------------------------------------------
 )
@@ -597,7 +598,7 @@ awful.rules.rules = {
 			     "Brave",
 			     "IceCat",
 			     "LibreWolf",
-                             "librewolf",
+				 "librewolf",
 			     "microsoft-edge-dev",
 			     "Microsoft-edge-dev",
 			     "microsoft-edge",
@@ -715,6 +716,21 @@ client.connect_signal("request::titlebars", function(c)
     }
 end)
 
+
+
+-- Run garbage collector regularly to prevent memory leaks
+gears.timer {
+       timeout = 30,
+       autostart = true,
+       callback = function() collectgarbage() end
+}
+
+-- -- Prevent the mouse scroll wheel from changing tags
+-- -- {{{ Mouse bindings
+-- root.buttons(awful.util.table.join(
+--     awful.button({ }, 3, function () mymainmenu:toggle() end)))
+-- -- }}}
+
 --[[
 -- Enable sloppy focus, so that focus follows mouse.
 client.connect_signal("mouse::enter", function(c)
@@ -725,44 +741,49 @@ end)
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 
--- startup_programs.run("xfsettingsd")
--- startup_programs.run("mate-settings-daemon")
--- startup_programs.run("/usr/libexec/mate-settings-daemon")
--- startup_programs.run("/usr/libexec/polkit-mate-authentication-agent-1")
--- startup_programs.run("mate-session")
--- startup_programs.run("caja -n")
--- startup_programs.run("lxsession")
--- startup_programs.run("lxsettings-daemon")
-   startup_programs.run("xsettingsd")
+   awful.spawn.single_instance("xsettingsd")
+   awful.spawn.single_instance("nm-applet")
+   awful.spawn.single_instance("picom")
+--   awful.spawn.single_instance("lxqt-powermanagement")
+   awful.spawn.single_instance("lxpolkit")
+   awful.spawn.single_instance("ibus-daemon -drx")
+--   awful.spawn.single_instance("xscreensaver -no-splash")
+   awful.spawn.single_instance("xmodmap" .. os.getenv("HOME") .. "/.Xmodmap")
+   awful.spawn.once("killall conky")
+   awful.spawn.single_instance("conky -d -c" .. os.getenv("HOME") .. "/.config/conky/conkyrc")
+   awful.spawn.once("killall udiskie")
+   awful.spawn.single_instance("udiskie -A -t")
+   awful.spawn.single_instance("nitrogen --restore")
+
+--[[ these are here for documentations sake
+-- awful.spawn.single_instance("xfsettingsd")
+-- awful.spawn.single_instance("mate-settings-daemon")
+-- awful.spawn.single_instance("/usr/libexec/mate-settings-daemon")
+-- awful.spawn.single_instance("/usr/libexec/polkit-mate-authentication-agent-1")
+-- awful.spawn.single_instance("mate-session")
+-- awful.spawn.single_instance("caja -n")
+-- awful.spawn.single_instance("lxsession")
+-- awful.spawn.single_instance("lxsettings-daemon")
+-- awful.spawn.single_instance("~/.config/awesome/wallpaper.sh")
+-- awful.spawn.single_instance("pcmanfm-qt --desktop")
+-- awful.spawn.single_instance("sleep 15s ; volumeicon &")
+-- awful.spawn.single_instance("sh ~/.mouse.sh")
+-- awful.spawn.single_instance("sh ~/.mykeys.sh")
+-- awful.spawn.single_instance("xfce4-panel")
+-- awful.spawn.single_instance("ulauncher")
+-- awful.spawn.single_instance("mate-volume-control-status-icon")
+-- awful.spawn.single_instance("/usr/libexec/xfce-polkit")
+-- awful.spawn.single_instance("abrt-applet")
+-- awful.spawn.single_instance("blueberry-tray")
+-- awful.spawn.single_instance("dnfdragora-updater")
 -- startup_programs.run("start-pulseaudio-x11")
-   startup_programs.run("nm-applet")
-   startup_programs.run("picom")
 -- startup_programs.run("xfce4-power-manager")
 -- startup_programs.run("xfce4-power-manager --restart")
 -- startup_programs.run("mate-power-manager")
--- startup_programs.run(" lxqt-powermanagement")
-   startup_programs.run("conky -c ~/.config/conky/conkyrc")
--- startup_programs.run("mate-volume-control-status-icon")
-   startup_programs.run("lxpolkit")
-   startup_programs.run("ibus-daemon -drx")
--- startup_programs.run("/usr/libexec/xfce-polkit")
-   startup_programs.run("xscreensaver -no-splash")
-   startup_programs.run("udiskie -A -t")
--- startup_programs.run("abrt-applet")
--- startup_programs.run("blueberry-tray")
--- startup_programs.run("dnfdragora-updater")
-
-   startup_programs.run("xmodmap ~/.Xmodmap")
--- startup_programs.run("sleep 15s ; volumeicon &")
-
--- startup_programs.run("sh ~/.mouse.sh")
--- startup_programs.run("sh ~/.mykeys.sh")
-
--- startup_programs.run("xfce4-panel")
--- startup_programs.run("ulauncher")
 --
---startup_programs.run("~/.config/awesome/wallpaper.sh")
-  startup_programs.run("pcmanfm-qt --desktop")
+--]]
+
+
 
 --[[
 -- scan directory, and optionally filter outputs
@@ -782,7 +803,7 @@ function scandir(directory, filter)
 end
 
 -- }}}
--- this part deals with setting images from the wallpaper directories as a wallpaper in slideshow mode  
+-- this part deals with setting images from the wallpaper directories as a wallpaper in slideshow mode
 -- configuration - edit to your liking
 wp_index = 1
 wp_timeout  = 300
