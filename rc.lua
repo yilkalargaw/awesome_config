@@ -22,38 +22,46 @@ local lain          = require("lain")
 
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
--- --Volume bar
--- local volume = lain.widget.alsabar(
---     {
---     -- width=200, height=10, followtag = true,
---     ticks = true, ticks_size = 6
---     }
--- )
+--Volume bar
+local volume = lain.widget.alsabar(
+    {
+    -- width=200, height=10, followtag = true,
+    ticks = true, ticks_size = 5,
+	colors = {
+	   background   = "#474747",
+	   foreground   = "#ffffff",
+	   mute         = red,
+	   unmute       = "#ffffff"
+	}
+	}
+
+)
 
 
--- local volume_widget = wibox.container.background(volume.bar)
--- volume_widget.bgimage=beautiful.widget_display
--- volume_widget:buttons(my_table.join (
---           awful.button({}, 1, function()
---             awful.spawn(string.format("%s -e alsamixer", awful.util.terminal))
---           end),
---           awful.button({}, 2, function()
---             os.execute(string.format("%s set %s 100%%", volume.cmd, volume.channel))
---             volume.notify()
---           end),
---           awful.button({}, 3, function()
---             os.execute(string.format("%s set %s toggle", volume.cmd, volume.togglechannel or volume.channel))
---             volume.notify()
---           end),
---           awful.button({}, 4, function()
---             os.execute(string.format("%s set %s 1%%+", volume.cmd, volume.channel))
---             volume.notify()
---           end),
---           awful.button({}, 5, function()
---             os.execute(string.format("%s set %s 1%%-", volume.cmd, volume.channel))
---             volume.notify()
---           end)
--- ))
+local volume_widget = wibox.container.background(volume.bar-- , "#ffffff", gears.shape.rectangle
+)
+volume_widget.bgimage=beautiful.widget_display
+volume_widget:buttons(my_table.join (
+          awful.button({}, 1, function()
+            awful.spawn(string.format("%s -e alsamixer", awful.util.terminal))
+          end),
+          awful.button({}, 2, function()
+            os.execute(string.format("%s set %s 100%%", volume.cmd, volume.channel))
+            volume.notify()
+          end),
+          awful.button({}, 3, function()
+            os.execute(string.format("%s set %s toggle", volume.cmd, volume.togglechannel or volume.channel))
+            volume.notify()
+          end),
+          awful.button({}, 4, function()
+            os.execute(string.format("%s set %s 10%%+", volume.cmd, volume.channel))
+            volume.notify()
+          end),
+          awful.button({}, 5, function()
+            os.execute(string.format("%s set %s 10%%-", volume.cmd, volume.channel))
+            volume.notify()
+          end)
+))
 
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
@@ -86,7 +94,9 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
--- beautiful.init(gears.filesystem.get_themes_dir() .. "xresources/theme.lua")
+--beautiful.init(gears.filesystem.get_themes_dir() .. "xresources/theme.lua")
+
+---[[
 local themes = {
    "default",         -- 1
    "gtk",             -- 2
@@ -98,6 +108,7 @@ local themes = {
 
 local chosen_theme = themes[5]
 beautiful.init(string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), chosen_theme))
+--]]
 
 -- This is used later as the default terminal and editor to run.
 terminal = "xterm"
@@ -120,15 +131,21 @@ awful.layout.layouts = {
     awful.layout.suit.tile.top,
     awful.layout.suit.fair,
     awful.layout.suit.fair.horizontal,
-    awful.layout.suit.spiral,
-    awful.layout.suit.spiral.dwindle,
+    -- awful.layout.suit.spiral,
+    -- awful.layout.suit.spiral.dwindle,
     awful.layout.suit.max,
     awful.layout.suit.max.fullscreen,
     awful.layout.suit.magnifier,
-    awful.layout.suit.corner.nw,
+    -- awful.layout.suit.corner.nw,
     -- awful.layout.suit.corner.ne,
     -- awful.layout.suit.corner.sw,
     -- awful.layout.suit.corner.se,
+	-- lain.layout.cascade,
+    -- lain.layout.cascade.tile,
+    -- lain.layout.centerwork,
+    -- lain.layout.centerwork.horizontal,
+    -- lain.layout.termfair,
+    -- lain.layout.termfair.center,
 }
 -- }}}
 
@@ -223,7 +240,7 @@ awful.screen.connect_for_each_screen(function(s)
 
     -- Each screen has its own tag table.
     -- awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
-	awful.tag({ "1", "2", "3", "4", "5", "6", "7", "emacs", "web" }, s, awful.layout.layouts[1])
+	awful.tag({ "፩", "፪", "፫", "፬", "፭", "፮", "፯", "emacs", "web" }, s, awful.layout.layouts[1])
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
@@ -383,11 +400,54 @@ globalkeys = gears.table.join(
     awful.key({ modkey }, "p", function() menubar.show() end,
               {description = "show the menubar", group = "launcher"}),
 
-	-- On the fly useless gaps change
+	-- Show/Hide Wibox
+    awful.key({ modkey }, "b", function ()
+		  for s in screen do
+			 s.mywibox.visible = not s.mywibox.visible
+			 if s.mybottomwibox then
+				s.mybottomwibox.visible = not s.mybottomwibox.visible
+			 end
+		  end
+	end,
+	   {description = "toggle wibox", group = "awesome"}),
+
+    -- On the fly useless gaps change
     awful.key({ modkey }, "=", function () lain.util.useless_gaps_resize(1) end,
-              {description = "increment useless gaps", group = "tag"}),
+	   {description = "increment useless gaps", group = "tag"}),
     awful.key({ modkey }, "-", function () lain.util.useless_gaps_resize(-1) end,
-              {description = "decrement useless gaps", group = "tag"})
+	   {description = "decrement useless gaps", group = "tag"}),
+
+    -- Dynamic tagging
+    awful.key({ modkey, "Shift" }, "n", function () lain.util.add_tag() end,
+              {description = "add new tag", group = "tag"}),
+    awful.key({ modkey, "Shift" }, "r", function () lain.util.rename_tag() end,
+              {description = "rename tag", group = "tag"}),
+    awful.key({ modkey, "Shift" }, "Left", function () lain.util.move_tag(-1) end,
+              {description = "move tag to the left", group = "tag"}),
+    awful.key({ modkey, "Shift" }, "Right", function () lain.util.move_tag(1) end,
+              {description = "move tag to the right", group = "tag"}),
+    awful.key({ modkey, "Shift" }, "d", function () lain.util.delete_tag() end,
+              {description = "delete tag", group = "tag"}),
+
+	    -- xscreensaver bindings
+    awful.key({ modkey, "Control" }, "Delete", function () awful.spawn("xscreensaver-command -lock") end,
+	   {description = "lockscreen with xscreensaver", group = "tag"})
+    -- awful.key({ modkey }, "-", function () lain.util.useless_gaps_resize(-1) end,
+	--    {description = "decrement useless gaps", group = "tag"}),
+
+  -- 	-- Brightness
+  -- awful.key({ }, "XF86MonBrightnessDown", function ()
+  --     awful.util.spawn("xbacklight -dec 5") end),
+  -- awful.key({ }, "XF86MonBrightnessUp", function ()
+  -- 		awful.util.spawn("xbacklight -inc 5") end),
+
+	-- --    -- Brightness
+    -- awful.key({ modkey, "Control" }, "KP_Add", function () os.execute("lxqt-config-brightness -i 20") end),
+    -- awful.key({ modkey, "Control" }, "KP_Subtract", function () os.execute("lxqt-config-brightness -d 20") end),
+    -- awful.key({ modkey, "Control" }, "]", function () os.execute("lxqt-config-brightness -i 20") end),
+    -- awful.key({ modkey, "Control" }, "[", function () os.execute("lxqt-config-brightness -d 20") end),
+    -- awful.key({ }, "XF86MonBrightnessUp", function () os.execute("lxqt-config-brightness -i 20") end),
+    -- awful.key({ }, "XF86MonBrightnessDown", function () os.execute("lxqt-config-brightness -d 20") end)
 
 )
 
@@ -637,8 +697,8 @@ awful.rules.rules = {
       { rule = { name = "conky" },
         properties = { sticky = true, border_width = 0, focus=false} },
 
-	  { rule_any = { name = {"Picture-in-Picture"}},
-	    properties = { sticky = true, border_width = 0, ontop=true -- , focus=false
+	  { rule_any = { name = {"Picture-in-Picture", "Picture in picture", "Picture in Picture"}},
+	    properties = { sticky = true, border_width = 0, ontop=true, floating = true -- , focus=false
 	  } },
 
 }
@@ -708,21 +768,23 @@ client.connect_signal("focus", function(c) c.border_color = beautiful.border_foc
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
---   awful.spawn.single_instance("xsettingsd")
---   awful.spawn.single_instance("nm-applet")
---   awful.spawn.single_instance("picom")
---   awful.spawn.single_instance("lxqt-powermanagement")
---   awful.spawn.single_instance("lxpolkit")
---   awful.spawn.single_instance("ibus-daemon -drx")
---   awful.spawn.single_instance("xscreensaver -no-splash")
-   awful.spawn.single_instance("xmodmap" .. os.getenv("HOME") .. "/.Xmodmap")
-   awful.spawn.once("killall volumeicon")
-   awful.spawn.single_instance("volumeicon")
-   -- awful.spawn.once("killall conky")
-   -- awful.spawn.single_instance("conky -d -c" .. os.getenv("HOME") .. "/.config/conky/conkyrc")
---   awful.spawn.once("killall udiskie")
---   awful.spawn.single_instance("udiskie -A -t")
---   awful.spawn.single_instance("nitrogen --restore")
+      awful.spawn.single_instance("xsettingsd")
+   -- awful.spawn.single_instance("xfsettingsd")
+      awful.spawn.single_instance("nm-applet")
+      awful.spawn.single_instance("picom")
+      awful.spawn.single_instance("lxqt-powermanagement")
+      awful.spawn.single_instance("lxpolkit")
+      -- awful.spawn.single_instance("ibus-daemon -drx")
+      -- awful.spawn.single_instance("xscreensaver -no-splash")
+   -- awful.spawn.single_instance("xmodmap" .. os.getenv("HOME") .. "/.Xmodmap")
+   -- awful.spawn.once("killall volumeicon")
+   -- awful.spawn.single_instance("volumeicon")
+      awful.spawn.once("killall conky")
+      awful.spawn.single_instance("conky -d -c" .. os.getenv("HOME") .. "/.config/conky/conkyrc")
+      awful.spawn.once("killall udiskie")
+      awful.spawn.single_instance("udiskie -A -t")
+   -- awful.spawn.single_instance("nitrogen --restore")
+   -- awful.spawn.single_instance("/usr/libexec/mate-settings-daemon")
 
 --[[ these are here for documentations sake
 -- awful.spawn.single_instance("xfsettingsd")
