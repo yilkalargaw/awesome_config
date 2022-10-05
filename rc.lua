@@ -14,58 +14,13 @@ local beautiful = require("beautiful")
 local naughty = require("naughty")
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup")
-
--- Successor of awesome-vain, this module provides alternative layouts, asynchronous widgets and utility functions for Awesome.
-local lain          = require("lain")
--- local math, string, os = math, string, os
-
-
-local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
-
---Volume bar
-local volume = lain.widget.alsabar(
-    {
-    -- width=200, height=10, followtag = true,
-    ticks = true, ticks_size = 5,
-	colors = {
-	   background   = "#474747",
-	   foreground   = "#ffffff",
-	   mute         = red,
-	   unmute       = "#ffffff"
-	}
-	}
-
-)
-
-
-local volume_widget = wibox.container.background(volume.bar-- , "#ffffff", gears.shape.rectangle
-)
-volume_widget.bgimage=beautiful.widget_display
-volume_widget:buttons(my_table.join (
-          awful.button({}, 1, function()
-            awful.spawn(string.format("%s -e alsamixer", awful.util.terminal))
-          end),
-          awful.button({}, 2, function()
-            os.execute(string.format("%s set %s 100%%", volume.cmd, volume.channel))
-            volume.notify()
-          end),
-          awful.button({}, 3, function()
-            os.execute(string.format("%s set %s toggle", volume.cmd, volume.togglechannel or volume.channel))
-            volume.notify()
-          end),
-          awful.button({}, 4, function()
-            os.execute(string.format("%s set %s 10%%+", volume.cmd, volume.channel))
-            volume.notify()
-          end),
-          awful.button({}, 5, function()
-            os.execute(string.format("%s set %s 10%%-", volume.cmd, volume.channel))
-            volume.notify()
-          end)
-))
-
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
+
+-- -- Load Debian menu entries
+-- local debian = require("debian.menu")
+-- local has_fdo, freedesktop = pcall(require, "freedesktop")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -94,7 +49,7 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
---beautiful.init(gears.filesystem.get_themes_dir() .. "xresources/theme.lua")
+--beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 
 ---[[
 local themes = {
@@ -106,13 +61,13 @@ local themes = {
    "magtk"            -- 6
 }
 
-local chosen_theme = themes[5]
+local chosen_theme = themes[6]
 beautiful.init(string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), chosen_theme))
 --]]
 
 -- This is used later as the default terminal and editor to run.
-terminal = "xterm"
-editor = os.getenv("EDITOR") or "vi"
+terminal = "xterm" or "x-terminal-emulator"
+editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 
 -- Default modkey.
@@ -135,37 +90,45 @@ awful.layout.layouts = {
     -- awful.layout.suit.spiral.dwindle,
     awful.layout.suit.max,
     awful.layout.suit.max.fullscreen,
-    awful.layout.suit.magnifier,
+    -- awful.layout.suit.magnifier,
     -- awful.layout.suit.corner.nw,
     -- awful.layout.suit.corner.ne,
     -- awful.layout.suit.corner.sw,
     -- awful.layout.suit.corner.se,
-	-- lain.layout.cascade,
-    -- lain.layout.cascade.tile,
-    -- lain.layout.centerwork,
-    -- lain.layout.centerwork.horizontal,
-    -- lain.layout.termfair,
-    -- lain.layout.termfair.center,
 }
 -- }}}
 
--- -- {{{ Menu
--- -- Create a launcher widget and a main menu
--- myawesomemenu = {
---    { "hotkeys", function() hotkeys_popup.show_help(nil, awful.screen.focused()) end },
---    { "manual", terminal .. " -e man awesome" },
---    { "edit config", editor_cmd .. " " .. awesome.conffile },
---    { "restart", awesome.restart },
---    { "quit", function() awesome.quit() end },
--- }
+-- {{{ Menu
+-- Create a launcher widget and a main menu
+myawesomemenu = {
+   { "hotkeys", function() hotkeys_popup.show_help(nil, awful.screen.focused()) end },
+   { "manual", terminal .. " -e man awesome" },
+   { "edit config", editor_cmd .. " " .. awesome.conffile },
+   { "restart", awesome.restart },
+   { "quit", function() awesome.quit() end },
+}
 
--- mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
---                                     { "open terminal", terminal }
---                                   }
---                         })
+local menu_awesome = { "awesome", myawesomemenu, beautiful.awesome_icon }
+local menu_terminal = { "open terminal", terminal }
 
--- mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
---                                      menu = mymainmenu })
+if has_fdo then
+    mymainmenu = freedesktop.menu.build({
+        before = { menu_awesome },
+        after =  { menu_terminal }
+    })
+else
+    mymainmenu = awful.menu({
+        items = {
+                  menu_awesome,
+--                  { "Debian", debian.menu.Debian_menu.Debian },
+                  menu_terminal,
+                }
+    })
+end
+
+
+mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
+                                     menu = mymainmenu })
 
 -- Menubar configuration
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
@@ -233,14 +196,13 @@ end
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
 
-
 awful.screen.connect_for_each_screen(function(s)
     -- Wallpaper
     set_wallpaper(s)
 
     -- Each screen has its own tag table.
-    -- awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
-	awful.tag({ "፩", "፪", "፫", "፬", "፭", "፮", "፯", "emacs", "web" }, s, awful.layout.layouts[1])
+   -- awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
+    awful.tag({ "፩", "፪", "፫", "፬", "፭", "፮", "፯", "emacs","web" }, s, awful.layout.layouts[1])
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
@@ -274,15 +236,14 @@ awful.screen.connect_for_each_screen(function(s)
         layout = wibox.layout.align.horizontal,
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
-            -- mylauncher,
+            mylauncher,
             s.mytaglist,
             s.mypromptbox,
         },
         s.mytasklist, -- Middle widget
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-            -- mykeyboardlayout,
-			volume_widget,
+            mykeyboardlayout,
             wibox.widget.systray(),
             mytextclock,
             s.mylayoutbox,
@@ -398,57 +359,7 @@ globalkeys = gears.table.join(
               {description = "lua execute prompt", group = "awesome"}),
     -- Menubar
     awful.key({ modkey }, "p", function() menubar.show() end,
-              {description = "show the menubar", group = "launcher"}),
-
-	-- Show/Hide Wibox
-    awful.key({ modkey }, "b", function ()
-		  for s in screen do
-			 s.mywibox.visible = not s.mywibox.visible
-			 if s.mybottomwibox then
-				s.mybottomwibox.visible = not s.mybottomwibox.visible
-			 end
-		  end
-	end,
-	   {description = "toggle wibox", group = "awesome"}),
-
-    -- On the fly useless gaps change
-    awful.key({ modkey }, "=", function () lain.util.useless_gaps_resize(1) end,
-	   {description = "increment useless gaps", group = "tag"}),
-    awful.key({ modkey }, "-", function () lain.util.useless_gaps_resize(-1) end,
-	   {description = "decrement useless gaps", group = "tag"}),
-
-    -- Dynamic tagging
-    awful.key({ modkey, "Shift" }, "n", function () lain.util.add_tag() end,
-              {description = "add new tag", group = "tag"}),
-    awful.key({ modkey, "Shift" }, "r", function () lain.util.rename_tag() end,
-              {description = "rename tag", group = "tag"}),
-    awful.key({ modkey, "Shift" }, "Left", function () lain.util.move_tag(-1) end,
-              {description = "move tag to the left", group = "tag"}),
-    awful.key({ modkey, "Shift" }, "Right", function () lain.util.move_tag(1) end,
-              {description = "move tag to the right", group = "tag"}),
-    awful.key({ modkey, "Shift" }, "d", function () lain.util.delete_tag() end,
-              {description = "delete tag", group = "tag"}),
-
-	    -- xscreensaver bindings
-    awful.key({ modkey, "Control" }, "Delete", function () awful.spawn("xscreensaver-command -lock") end,
-	   {description = "lockscreen with xscreensaver", group = "tag"})
-    -- awful.key({ modkey }, "-", function () lain.util.useless_gaps_resize(-1) end,
-	--    {description = "decrement useless gaps", group = "tag"}),
-
-  -- 	-- Brightness
-  -- awful.key({ }, "XF86MonBrightnessDown", function ()
-  --     awful.util.spawn("xbacklight -dec 5") end),
-  -- awful.key({ }, "XF86MonBrightnessUp", function ()
-  -- 		awful.util.spawn("xbacklight -inc 5") end),
-
-	-- --    -- Brightness
-    -- awful.key({ modkey, "Control" }, "KP_Add", function () os.execute("lxqt-config-brightness -i 20") end),
-    -- awful.key({ modkey, "Control" }, "KP_Subtract", function () os.execute("lxqt-config-brightness -d 20") end),
-    -- awful.key({ modkey, "Control" }, "]", function () os.execute("lxqt-config-brightness -i 20") end),
-    -- awful.key({ modkey, "Control" }, "[", function () os.execute("lxqt-config-brightness -d 20") end),
-    -- awful.key({ }, "XF86MonBrightnessUp", function () os.execute("lxqt-config-brightness -i 20") end),
-    -- awful.key({ }, "XF86MonBrightnessDown", function () os.execute("lxqt-config-brightness -d 20") end)
-
+              {description = "show the menubar", group = "launcher"})
 )
 
 clientkeys = gears.table.join(
@@ -768,48 +679,31 @@ client.connect_signal("focus", function(c) c.border_color = beautiful.border_foc
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
-      awful.spawn.single_instance("xsettingsd")
-   -- awful.spawn.single_instance("xfsettingsd")
-      awful.spawn.single_instance("nm-applet")
-      awful.spawn.single_instance("picom")
-      awful.spawn.single_instance("lxqt-powermanagement")
-      awful.spawn.single_instance("lxpolkit")
-      -- awful.spawn.single_instance("ibus-daemon -drx")
-      -- awful.spawn.single_instance("xscreensaver -no-splash")
-   -- awful.spawn.single_instance("xmodmap" .. os.getenv("HOME") .. "/.Xmodmap")
-   -- awful.spawn.once("killall volumeicon")
-   -- awful.spawn.single_instance("volumeicon")
-      awful.spawn.once("killall conky")
-      awful.spawn.single_instance("conky -d -c" .. os.getenv("HOME") .. "/.config/conky/conkyrc")
-      awful.spawn.once("killall udiskie")
-      awful.spawn.single_instance("udiskie -A -t")
-   -- awful.spawn.single_instance("nitrogen --restore")
-   -- awful.spawn.single_instance("/usr/libexec/mate-settings-daemon")
+---[[
+awful.spawn.with_shell(
+    'if (xrdb -query | grep -q "^awesome\\.started:\\s*true$"); then exit; fi;' ..
+    'xrdb -merge <<< "awesome.started:true";' ..
+    -- list each of your autostart commands, followed by ; inside single quotes, followed by ..
+    --'dex-autostart -ae AWESOME  --search-paths "$XDG_CONFIG_DIRS/autostart:$XDG_CONFIG_HOME/autostart"' -- https://github.com/jceb/dex
+    'dex-autostart -ae AWESOME'
+    )
+--]]
+awful.spawn.with_shell("feh --bg-scale --no-fehbg --randomize --recursive  ~/.wallpapers")
 
---[[ these are here for documentations sake
--- awful.spawn.single_instance("xfsettingsd")
--- awful.spawn.single_instance("mate-settings-daemon")
--- awful.spawn.single_instance("/usr/libexec/mate-settings-daemon")
--- awful.spawn.single_instance("/usr/libexec/polkit-mate-authentication-agent-1")
--- awful.spawn.single_instance("mate-session")
--- awful.spawn.single_instance("caja -n")
--- awful.spawn.single_instance("lxsession")
--- awful.spawn.single_instance("lxsettings-daemon")
--- awful.spawn.single_instance("~/.config/awesome/wallpaper.sh")
--- awful.spawn.single_instance("pcmanfm-qt --desktop")
--- awful.spawn.single_instance("sleep 15s ; volumeicon &")
--- awful.spawn.single_instance("sh ~/.mouse.sh")
--- awful.spawn.single_instance("sh ~/.mykeys.sh")
--- awful.spawn.single_instance("xfce4-panel")
--- awful.spawn.single_instance("ulauncher")
--- awful.spawn.single_instance("mate-volume-control-status-icon")
--- awful.spawn.single_instance("/usr/libexec/xfce-polkit")
--- awful.spawn.single_instance("abrt-applet")
--- awful.spawn.single_instance("blueberry-tray")
--- awful.spawn.single_instance("dnfdragora-updater")
--- startup_programs.run("start-pulseaudio-x11")
--- startup_programs.run("xfce4-power-manager")
--- startup_programs.run("xfce4-power-manager --restart")
--- startup_programs.run("mate-power-manager")
---
+-- awful.spawn.with_shell("~/.config/awesome/autorun.sh")
+-- awful.spawn.once("killall conky")
+-- awful.spawn.single_instance("conky -d -c" .. os.getenv("HOME") .. "/.config/conky/conkyrc")
+
+---[[
+-- Additional bindings
+globalkeys = gears.table.merge(globalkeys, gears.table.join(
+								  awful.key({ modkey, "Control" }, "Delete", function () awful.util.spawn("xscreensaver-command -l") end),
+								  awful.key({  }, "XF86MonBrightnessUp", function () awful.util.spawn("brightnessctl s 5%+") end),
+								  awful.key({  }, "XF86MonBrightnessDown", function () awful.util.spawn("brightnessctl s 5%-") end),
+								  awful.key({  }, "XF86AudioRaiseVolume", function () awful.util.spawn("amixer set Master 5%+") end),
+								  awful.key({  }, "XF86AudioLowerVolume", function () awful.util.spawn("amixer set Master 5%-") end),
+								  awful.key({  }, "XF86AudioMute", function () awful.util.spawn("amixer set Master toggle") end)))
+
+
+root.keys(globalkeys)
 --]]
