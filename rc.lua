@@ -18,10 +18,6 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
 
--- -- Load Debian menu entries
--- local debian = require("debian.menu")
--- local has_fdo, freedesktop = pcall(require, "freedesktop")
-
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -49,7 +45,7 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
---beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
+-- beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 
 ---[[
 local themes = {
@@ -86,12 +82,12 @@ awful.layout.layouts = {
     awful.layout.suit.tile.top,
     awful.layout.suit.fair,
     awful.layout.suit.fair.horizontal,
-    -- awful.layout.suit.spiral,
-    -- awful.layout.suit.spiral.dwindle,
+    awful.layout.suit.spiral,
+    awful.layout.suit.spiral.dwindle,
     awful.layout.suit.max,
     awful.layout.suit.max.fullscreen,
-    -- awful.layout.suit.magnifier,
-    -- awful.layout.suit.corner.nw,
+    awful.layout.suit.magnifier,
+    awful.layout.suit.corner.nw,
     -- awful.layout.suit.corner.ne,
     -- awful.layout.suit.corner.sw,
     -- awful.layout.suit.corner.se,
@@ -108,24 +104,10 @@ myawesomemenu = {
    { "quit", function() awesome.quit() end },
 }
 
-local menu_awesome = { "awesome", myawesomemenu, beautiful.awesome_icon }
-local menu_terminal = { "open terminal", terminal }
-
-if has_fdo then
-    mymainmenu = freedesktop.menu.build({
-        before = { menu_awesome },
-        after =  { menu_terminal }
-    })
-else
-    mymainmenu = awful.menu({
-        items = {
-                  menu_awesome,
---                  { "Debian", debian.menu.Debian_menu.Debian },
-                  menu_terminal,
-                }
-    })
-end
-
+mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
+                                    { "open terminal", terminal }
+                                  }
+                        })
 
 mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
                                      menu = mymainmenu })
@@ -201,7 +183,7 @@ awful.screen.connect_for_each_screen(function(s)
     set_wallpaper(s)
 
     -- Each screen has its own tag table.
-   -- awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
+    -- awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
     awful.tag({ "፩", "፪", "፫", "፬", "፭", "፮", "፯", "emacs","web" }, s, awful.layout.layouts[1])
 
     -- Create a promptbox for each screen
@@ -523,95 +505,12 @@ awful.rules.rules = {
 
     -- Add titlebars to normal clients and dialogs
     { rule_any = {type = { "normal", "dialog" }
-      }, properties = { titlebars_enabled = false }
+      }, properties = { titlebars_enabled = true }
     },
 
-	-- Set Firefox to always map on the tag named "2" on screen 1.
+    -- Set Firefox to always map on the tag named "2" on screen 1.
     -- { rule = { class = "Firefox" },
     --   properties = { screen = 1, tag = "2" } },
-
-	    { rule_any = { type = { "normal" } },
-      properties = { titlebars_enabled = false } },
-
-    { rule_any = { type = { "dialog" } },
-      properties = { titlebars_enabled = false } },
-
-    { rule_any = { type = { "desktop" } },
-      properties = { sticky = true, border_width = 0} },
-
-    -- Set Emacs to always map on the tag named "emacs" on screen 1.
-    { rule = { class = "Emacs" },
-      properties = {tag = "emacs", maximized = true } },
-
-    -- Set browsers to alway map on the tag named "web"
-    { rule_any = { class = { "Firefox",
-			     "firefox",
-			     "Mozilla Firefox",
-			     "Chromium",
-			     "Opera",
-			     "Midori",
-			     "Vivaldi",
-			     "Basilisk",
-			     "Brave",
-			     "IceCat",
-			     "LibreWolf",
-				 "librewolf",
-			     "microsoft-edge-dev",
-			     "Microsoft-edge-dev",
-			     "microsoft-edge",
-			     "Microsoft-edge",
-			     "google-chrome",
-			     "Google-chrome",
-			     "Falkon",
-			     "Falkon Browser", },
-		   name = {"Pale Moon", }},
-      properties = {tag = "web" }},
-
-    { rule_any = { name = { "GNU Image Manipulation Program",
-			    "MyPaint",
-			    "Inkscape",
-			    "krita" }},
-      properties = { maximized = true } },
-
-    { rule = { name = "Whisker Menu" },
-      properties = {floating = true } },
-
-    { rule = { role = "xfce4-terminal-dropdown" },
-      properties = {floating = true } },
-
-    { rule = { class = "Xfce4-panel" },
-      properties = { ontop=true, border_width = 0 } },
-
---    { rule = { name = "xfdashboard" },
---      properties = { maximized=true, floating=true, ontop=true, border_width = 0 } },
-
-
-     -- -- I need rules to raise xfce4-to the top when focused
-     -- { rule = { class = "xfce4-panel" },
-     --   properties = {raise = true } },
-
-
-    -- Set Firefox to always map on the first tag on screen 1.
-    --  { rule = { class = "Firefox" },
-    --    properties = { screen = 1, tag = awful.util.tagnames[1] } },
-
-      -- { rule = { name = "pcmanfm-qt" },
-      --   properties = { sticky = true, border_width = 0, focus=false} },
-
-     -- { rule = { class = "pcmanfm-qt" },
-     --   properties = { floating = true, sticky = true, ontop = true, above = true, border_width = 0},
-     --   callback = awful.placement.centered },
-
-      -- { rule = { name = "pcmanfm" },
-      --   properties = { sticky = true, border_width = 0, focus=false} },
-
-      { rule = { name = "conky" },
-        properties = { sticky = true, border_width = 0, focus=false} },
-
-	  { rule_any = { name = {"Picture-in-Picture", "Picture in picture", "Picture in Picture"}},
-	    properties = { sticky = true, border_width = 0, ontop=true, floating = true -- , focus=false
-	  } },
-
 }
 -- }}}
 
@@ -707,3 +606,93 @@ globalkeys = gears.table.merge(globalkeys, gears.table.join(
 
 root.keys(globalkeys)
 --]]
+
+-- additional rules
+
+-- {{{ Rules
+-- Rules to apply to new clients (through the "manage" signal).
+awful.rules.rules = gears.table.merge(awful.rules.rules,
+									  {
+										 { rule_any = { type = { "normal" } },
+										   properties = { titlebars_enabled = false } },
+
+										 { rule_any = { type = { "dialog" } },
+										   properties = { titlebars_enabled = false } },
+
+										 { rule_any = { type = { "desktop" } },
+										   properties = { sticky = true, border_width = 0} },
+
+										 -- Set Emacs to always map on the tag named "emacs" on screen 1.
+										 { rule = { class = "Emacs" },
+										   properties = {tag = "emacs", maximized = true } },
+
+										 -- Set browsers to alway map on the tag named "web"
+										 { rule_any = { class = { "Firefox",
+																  "firefox",
+																  "Mozilla Firefox",
+																  "Chromium",
+																  "Opera",
+																  "Midori",
+																  "Vivaldi",
+																  "Basilisk",
+																  "Brave",
+																  "IceCat",
+																  "LibreWolf",
+																  "librewolf",
+																  "microsoft-edge-dev",
+																  "Microsoft-edge-dev",
+																  "microsoft-edge",
+																  "Microsoft-edge",
+																  "google-chrome",
+																  "Google-chrome",
+																  "Falkon",
+																  "Falkon Browser", },
+														name = {"Pale Moon", }},
+										   properties = {tag = "web" }},
+
+										 { rule_any = { name = { "GNU Image Manipulation Program",
+																 "MyPaint",
+																 "Inkscape",
+																 "krita" }},
+										   properties = { maximized = true } },
+
+										 -- { rule = { name = "Whisker Menu" },
+										 --   properties = {floating = true } },
+
+										 -- { rule = { role = "xfce4-terminal-dropdown" },
+										 --   properties = {floating = true } },
+
+										 -- { rule = { class = "Xfce4-panel" },
+										 --   properties = { ontop=true, border_width = 0 } },
+
+										 --    { rule = { name = "xfdashboard" },
+										 --      properties = { maximized=true, floating=true, ontop=true, border_width = 0 } },
+
+
+										 -- -- I need rules to raise xfce4-to the top when focused
+										 -- { rule = { class = "xfce4-panel" },
+										 --   properties = {raise = true } },
+
+
+										 -- Set Firefox to always map on the first tag on screen 1.
+										 --  { rule = { class = "Firefox" },
+										 --    properties = { screen = 1, tag = awful.util.tagnames[1] } },
+
+										 -- { rule = { name = "pcmanfm-qt" },
+										 --   properties = { sticky = true, border_width = 0, focus=false} },
+
+										 -- { rule = { class = "pcmanfm-qt" },
+										 --   properties = { floating = true, sticky = true, ontop = true, above = true, border_width = 0},
+										 --   callback = awful.placement.centered },
+
+										 -- { rule = { name = "pcmanfm" },
+										 --   properties = { sticky = true, border_width = 0, focus=false} },
+
+										 { rule = { name = "conky" },
+										   properties = { sticky = true, border_width = 0, focus=false} },
+
+										 { rule_any = { name = {"Picture-in-Picture", "Picture in picture", "Picture in Picture"}},
+										   properties = { sticky = true, border_width = 0, ontop=true, floating = true -- , focus=false
+										 } },
+
+})
