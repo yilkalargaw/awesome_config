@@ -184,7 +184,7 @@ awful.screen.connect_for_each_screen(function(s)
 
     -- Each screen has its own tag table.
     -- awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
-    awful.tag({ "፩", "፪", "፫", "፬", "፭", "፮", "፯", "emacs","web" }, s, awful.layout.layouts[1])
+    -- awful.tag({ "፩", "፪", "፫", "፬", "፭", "፮", "፯", "emacs","web" }, s, awful.layout.layouts[1])
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
@@ -587,7 +587,8 @@ awful.spawn.with_shell(
     'dex-autostart -ae AWESOME'
     )
 --]]
-awful.spawn.with_shell("feh --bg-scale --no-fehbg --randomize --recursive  ~/.wallpapers")
+
+awful.spawn.with_shell("feh --bg-scale --no-fehbg --randomize --recursive  ~/.local/share/wallpapers")
 
 -- awful.spawn.with_shell("~/.config/awesome/autorun.sh")
 -- awful.spawn.once("killall conky")
@@ -648,7 +649,7 @@ awful.rules.rules = gears.table.merge(awful.rules.rules,
 																  "Falkon",
 																  "Falkon Browser", },
 														name = {"Pale Moon", }},
-										   properties = {tag = "web" }},
+										   properties = {tag = "web"}},
 
 										 { rule_any = { name = { "GNU Image Manipulation Program",
 																 "MyPaint",
@@ -696,3 +697,12 @@ awful.rules.rules = gears.table.merge(awful.rules.rules,
 										 } },
 
 })
+
+---[[
+-- Each screen has its own tag table.
+local names = { "፩", "፪", "፫", "፬", "፭", "፮", "፯", "emacs","web" }
+local l = awful.layout.suit  -- Just to save some typing: use an alias.
+local layouts = { l.floating, l.floating, l.floating, l.floating, l.floating,
+    l.floating, l.floating, l.floating, l.max }
+awful.tag(names, s, layouts)
+--]]
