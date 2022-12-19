@@ -369,10 +369,19 @@ local barcolor1 = gears.color({
     stops = { {0.9, theme.gtk.bg_color}, {0.1, theme.gtk.selected_bg_color} }
 })
 
+theme.border_width  = dpi(5)
+
 theme.tasklist_bg_focus = barcolor1
 
 -- theme.tasklist_shape = gears.shape.rounded_rect
 -- theme.taglist_shape = gears.shape.rounded_rect
+
+theme.border_normal = mix(theme.gtk.wm_border_unfocused_color, theme.gtk.wm_border_focused_color, 0.8)
+theme.border_focus  = theme.gtk.wm_border_focused_color
+theme.border_marked = theme.gtk.success_color
+
+theme.border_width  = dpi(2)
+theme.border_radius = theme.gtk.button_border_radius
 
 theme.icon_theme = "Papirus-Dark"
 
