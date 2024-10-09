@@ -618,88 +618,90 @@ root.keys(globalkeys)
 -- {{{ Rules
 -- Rules to apply to new clients (through the "manage" signal).
 awful.rules.rules = gears.table.merge(awful.rules.rules,
-									  {
-										 { rule_any = { type = { "normal" } },
-										   properties = { titlebars_enabled = false } },
+                                      {
+                                         { rule_any = { type = { "normal" } },
+                                           properties = { titlebars_enabled = false } },
 
-										 { rule_any = { type = { "dialog" } },
-										   properties = { titlebars_enabled = false } },
+                                         { rule_any = { type = { "dialog" } },
+                                           properties = { titlebars_enabled = false } },
 
-										 { rule_any = { type = { "desktop" } },
-										   properties = { sticky = true, border_width = 0} },
+                                         { rule_any = { type = { "desktop" } },
+                                           properties = { sticky = true, border_width = 0} },
 
-										 -- Set Emacs to always map on the tag named "emacs" on screen 1.
-										 { rule = { class = "Emacs" },
-										   properties = {tag = "emacs", maximized = true } },
+                                         -- Set Emacs to always map on the tag named "emacs" on screen 1.
+                                         { rule = { class = "Emacs" },
+                                           properties = {tag = "emacs", maximized = true } },
 
-										 -- Set browsers to alway map on the tag named "web"
-										 { rule_any = { class = { "Firefox",
-																  "firefox",
-																  "Mozilla Firefox",
-																  "Chromium",
-																  "Opera",
-																  "Midori",
-																  "Vivaldi",
-																  "Basilisk",
-																  "Brave",
-																  "IceCat",
-																  "LibreWolf",
-																  "librewolf",
-																  "microsoft-edge-dev",
-																  "Microsoft-edge-dev",
-																  "microsoft-edge",
-																  "Microsoft-edge",
-																  "google-chrome",
-																  "Google-chrome",
-																  "Falkon",
-																  "Falkon Browser", },
-														name = {"Pale Moon", }},
-										   properties = {tag = "web"}},
+                                         -- Set browsers to alway map on the tag named "web"
+                                         { rule_any = { class = { "Firefox",
+                                                                  "firefox",
+                                                                  "Mozilla Firefox",
+                                                                  "Chromium",
+                                                                  "Opera",
+                                                                  "Midori",
+                                                                  "Vivaldi",
+                                                                  "Basilisk",
+                                                                  "Brave",
+                                                                  "IceCat",
+                                                                  "LibreWolf",
+                                                                  "librewolf",
+                                                                  "microsoft-edge-dev",
+                                                                  "Microsoft-edge-dev",
+                                                                  "microsoft-edge",
+                                                                  "Microsoft-edge",
+                                                                  "google-chrome",
+                                                                  "Google-chrome",
+                                                                  "Falkon",
+                                                                  "Falkon Browser",
+                                                                  "Navigator"},
+                                                        name = {"Pale Moon", "Zen Browser"}},
+                                           properties = {tag = "web"}},
 
-										 { rule_any = { name = { "GNU Image Manipulation Program",
-																 "MyPaint",
-																 "Inkscape",
-																 "krita" }},
-										   properties = { maximized = true } },
+                                         { rule_any = { name = { "GNU Image Manipulation Program",
+                                                                 "MyPaint",
+                                                                 "Inkscape",
+                                                                 "krita" },
+                                                        class = {"krita", "draw.io"}},
+                                           properties = { maximized = true } },
 
-										 -- { rule = { name = "Whisker Menu" },
-										 --   properties = {floating = true } },
+                                         -- { rule = { name = "Whisker Menu" },
+                                         --   properties = {floating = true } },
 
-										 -- { rule = { role = "xfce4-terminal-dropdown" },
-										 --   properties = {floating = true } },
+                                         -- { rule = { role = "xfce4-terminal-dropdown" },
+                                         --   properties = {floating = true } },
 
-										 -- { rule = { class = "Xfce4-panel" },
-										 --   properties = { ontop=true, border_width = 0 } },
+                                         -- { rule = { class = "Xfce4-panel" },
+                                         --   properties = { ontop=true, border_width = 0 } },
 
-										 --    { rule = { name = "xfdashboard" },
-										 --      properties = { maximized=true, floating=true, ontop=true, border_width = 0 } },
-
-
-										 -- -- I need rules to raise xfce4-to the top when focused
-										 -- { rule = { class = "xfce4-panel" },
-										 --   properties = {raise = true } },
+                                         --    { rule = { name = "xfdashboard" },
+                                         --      properties = { maximized=true, floating=true, ontop=true, border_width = 0 } },
 
 
-										 -- Set Firefox to always map on the first tag on screen 1.
-										 --  { rule = { class = "Firefox" },
-										 --    properties = { screen = 1, tag = awful.util.tagnames[1] } },
+                                         -- -- I need rules to raise xfce4-to the top when focused
+                                         -- { rule = { class = "xfce4-panel" },
+                                         --   properties = {raise = true } },
 
-										 -- { rule = { name = "pcmanfm-qt" },
-										 --   properties = { sticky = true, border_width = 0, focus=false} },
 
-										 -- { rule = { class = "pcmanfm-qt" },
-										 --   properties = { floating = true, sticky = true, ontop = true, above = true, border_width = 0},
-										 --   callback = awful.placement.centered },
+                                         -- Set Firefox to always map on the first tag on screen 1.
+                                         --  { rule = { class = "Firefox" },
+                                         --    properties = { screen = 1, tag = awful.util.tagnames[1] } },
 
-										 -- { rule = { name = "pcmanfm" },
-										 --   properties = { sticky = true, border_width = 0, focus=false} },
+                                         -- { rule = { name = "pcmanfm-qt" },
+                                         --   properties = { sticky = true, border_width = 0, focus=false} },
 
-										 { rule = { name = "conky" },
-										   properties = { sticky = true, border_width = 0, focus=false} },
+                                         -- { rule = { class = "pcmanfm-qt" },
+                                         --   properties = { floating = true, sticky = true, ontop = true, above = true, border_width = 0},
+                                         --   callback = awful.placement.centered },
 
-										 { rule_any = { name = {"Picture-in-Picture", "Picture in picture", "Picture in Picture"}},
-										   properties = { sticky = true, border_width = 0, ontop=true, floating = true -- , focus=false
-										 } },
+                                         -- { rule = { name = "pcmanfm" },
+                                         --   properties = { sticky = true, border_width = 0, focus=false} },
+
+                                         { rule = { name = "conky" },
+                                           properties = { sticky = true, border_width = 0, focus=false} },
+
+                                         { rule_any = { name = {"Picture-in-Picture", "Picture in picture", "Picture in Picture"}},
+                                           properties = { sticky = true, border_width = 0, ontop=true, floating = true -- , focus=false
+                                         } },
 
 })
 
